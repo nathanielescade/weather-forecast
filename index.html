@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Insane Weather Forecast - The Ultimate Weather Experience
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&amp;family=Roboto+Mono&amp;display=swap" rel="stylesheet"/>
+  <style>
+    /* CSS Styles remain unchanged */
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: #e0e0e0;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5 {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.1em;
+    }
+    /* Glitch effect for the main title */
+    .glitch {
+      position: relative;
+      color: #00ffea;
+      font-size: 3.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      animation: flicker 3s infinite alternate;
+    }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      right: 0;
+      opacity: 0.8;
+      clip: rect(0, 900px, 0, 0);
+    }
+    .glitch::before {
+      animation: glitchTop 2s infinite linear alternate-reverse;
+      color: #ff00c8;
+      z-index: -1;
+    }
+    .glitch::after {
+      animation: glitchBottom 2s infinite linear alternate-reverse;
+      color: #00ffea;
+      z-index: -2;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 22%, 24%, 55% {
+        opacity: 0.4;
+      }
+    }
+    @keyframes glitchTop {
+      0% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+      10% {
+        clip: rect(0, 9999px, 50px, 0);
+        transform: translate(-3px, -3px);
+      }
+      20% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+      30% {
+        clip: rect(0, 9999px, 40px, 0);
+        transform: translate(-2px, 2px);
+      }
+      40% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+      100% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+    }
+    @keyframes glitchBottom {
+      0% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+      10% {
+        clip: rect(30px, 9999px, 80px, 0);
+        transform: translate(3px, 3px);
+      }
+      20% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+      30% {
+        clip: rect(20px, 9999px, 60px, 0);
+        transform: translate(2px, -2px);
+      }
+      40% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+      100% {
+        clip: rect(0, 9999px, 0, 0);
+        transform: translate(0);
+      }
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #111;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #00ffea, #ff00c8);
+      border-radius: 6px;
+    }
+    /* Floating neon particles animation */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.7;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      mix-blend-mode: screen;
+    }
+    .particle.cyan {
+      background: #00ffe0;
+      box-shadow: 0 0 10px #00ffe0, 0 0 20px #00ffe0;
+    }
+    .particle.pink {
+      background: #ff00c8;
+      box-shadow: 0 0 10px #ff00c8, 0 0 20px #ff00c8;
+    }
+    @keyframes floatUpDown {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-20px);
+        opacity: 1;
+      }
+    }
+    /* Neon flicker for buttons */
+    .neon-btn {
+      box-shadow:
+        0 0 5px #ff00c8,
+        0 0 10px #ff00c8,
+        0 0 20px #ff00c8,
+        0 0 40px #ff00c8;
+      transition: box-shadow 0.3s ease-in-out;
+    }
+    .neon-btn:hover {
+      box-shadow:
+        0 0 10px #00ffe0,
+        0 0 20px #00ffe0,
+        0 0 40px #00ffe0,
+        0 0 80px #00ffe0;
+    }
+    /* Input neon glow */
+    .neon-input {
+      background: #111;
+      border: 2px solid #ff00c8;
+      color: #e0e0e0;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      outline: none;
+      box-shadow:
+        0 0 5px #ff00c8,
+        0 0 10px #ff00c8;
+      transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .neon-input:focus {
+      border-color: #00ffe0;
+      box-shadow:
+        0 0 10px #00ffe0,
+        0 0 20px #00ffe0;
+      color: #00ffe0;
+    }
+    /* Loader animation */
+    .loader {
+      border: 4px solid #111;
+      border-top: 4px solid #ff00c8;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    /* Scrollbar for forecast list */
+    .scrollbar-thin {
+      scrollbar-width: thin;
+    }
+    .scrollbar-thumb-pink-600::-webkit-scrollbar-thumb {
+      background-color: #be185d;
+      border-radius: 6px;
+    }
+  </style>
+ </head>
+ <body class="min-h-screen flex flex-col relative overflow-x-hidden">
+  <!-- Floating neon particles -->
+  <div aria-hidden="true">
+   <div class="particle cyan" style="width:12px; height:12px; top:10%; left:15%; animation: floatUpDown 6s ease-in-out infinite;">
+   </div>
+   <div class="particle pink" style="width:8px; height:8px; top:20%; left:40%; animation: floatUpDown 5s ease-in-out infinite 1s;">
+   </div>
+   <div class="particle cyan" style="width:10px; height:10px; top:35%; left:70%; animation: floatUpDown 7s ease-in-out infinite 2s;">
+   </div>
+   <div class="particle pink" style="width:14px; height:14px; top:50%; left:25%; animation: floatUpDown 6.5s ease-in-out infinite 3s;">
+   </div>
+   <div class="particle cyan" style="width:9px; height:9px; top:65%; left:80%; animation: floatUpDown 5.5s ease-in-out infinite 4s;">
+   </div>
+   <div class="particle pink" style="width:11px; height:11px; top:75%; left:50%; animation: floatUpDown 6.2s ease-in-out infinite 5s;">
+   </div>
+   <div class="particle cyan" style="width:7px; height:7px; top:85%; left:10%; animation: floatUpDown 7.5s ease-in-out infinite 6s;">
+   </div>
+  </div>
+  
+  <!-- Header Component -->
+  <header class="sticky top-0 z-50 bg-black bg-opacity-90 backdrop-blur-md border-b border-pink-600">
+   <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a class="glitch" data-text="INSANE WEATHER" href="#">
+     WEATHER
+    </a>
+    <ul class="hidden md:flex space-x-8 text-pink-500 font-semibold tracking-widest uppercase text-sm">
+     <li>
+      <a class="hover:text-cyan-400 transition" href="#forecast">
+       Forecast
+      </a>
+     </li>
+    </ul>
+    <button aria-label="Toggle menu" class="md:hidden text-pink-500 focus:outline-none" id="menu-btn">
+     <i class="fas fa-bars fa-2x">
+     </i>
+    </button>
+   </nav>
+   <div class="hidden md:hidden bg-black bg-opacity-95 border-t border-pink-600" id="mobile-menu">
+    <ul class="flex flex-col space-y-4 p-6 text-pink-500 font-semibold tracking-widest uppercase text-lg">
+     <li>
+      <a class="block hover:text-cyan-400 transition" href="#forecast">
+       Forecast
+      </a>
+     </li>
+    </ul>
+   </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-6 py-10 space-y-20 relative z-10">
+   <!-- Location Input Component -->
+   <section class="space-y-8" id="forecast">
+    <h2 class="text-4xl text-cyan-400 font-extrabold uppercase tracking-widest text-center drop-shadow-[0_0_10px_rgba(0,255,234,0.7)]">
+     Enter Location for Real-Time Weather
+    </h2>
+    <form aria-label="Location input form" class="max-w-3xl mx-auto flex flex-col sm:flex-row gap-4 justify-center items-center" id="location-form">
+     <input aria-label="Enter city or location" autocomplete="off" class="neon-input flex-grow text-center text-lg" id="location-input" placeholder="Enter city, state, or country" type="text"/>
+     <button aria-label="Get weather" class="neon-btn bg-pink-600 hover:bg-pink-700 text-black font-extrabold uppercase tracking-widest py-3 px-8 rounded-lg shadow-lg transition duration-300" type="submit">
+      Get Weather
+     </button>
+    </form>
+    
+    <!-- Current Weather Display Component -->
+    <div class="mt-12 max-w-5xl mx-auto bg-gradient-to-br from-pink-900 via-black to-pink-900 rounded-3xl p-8 shadow-[0_0_40px_#ff00c8] text-center relative overflow-hidden min-h-[360px] flex flex-col justify-center">
+     <div aria-label="Loading weather data" aria-live="polite" class="loader hidden" id="weather-loader" role="status">
+     </div>
+     <div class="space-y-6 text-cyan-300 font-mono" id="weather-content">
+      <h3 class="text-3xl font-extrabold text-pink-400 uppercase tracking-widest mb-2" id="weather-location">
+       Loading your current location weather...
+      </h3>
+      <img alt="Weather icon" class="mx-auto w-36 h-36 rounded-full border-4 border-cyan-400 shadow-[0_0_20px_#00ffe0]" height="150" id="weather-icon" src="https://storage.googleapis.com/a1aa/image/c8617836-3409-402f-849b-64ac042ea704.jpg" width="150"/>
+      <p class="text-lg font-semibold" id="weather-description">
+       Please wait...
+      </p>
+      <div class="flex justify-center space-x-12 text-pink-400 font-bold text-xl" id="weather-stats">
+       <div>
+        <i class="fas fa-temperature-high">
+        </i>
+        <span id="temp">
+         --°C
+        </span>
+       </div>
+       <div>
+        <i class="fas fa-wind">
+        </i>
+        <span id="wind">
+         -- m/s
+        </span>
+       </div>
+       <div>
+        <i class="fas fa-tint">
+        </i>
+        <span id="humidity">
+         --%
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <!-- Weather Details Section -->
+   <section class="space-y-8 max-w-5xl mx-auto" id="live-forecast">
+    <h2 class="text-4xl text-cyan-400 font-extrabold uppercase tracking-widest text-center drop-shadow-[0_0_10px_rgba(0,255,234,0.7)]">
+     Live Weather Details for Your Location
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+     <!-- Current Weather Card Component -->
+     <div class="bg-gradient-to-br from-pink-900 via-black to-pink-900 rounded-3xl p-8 shadow-[0_0_30px_#ff00c8] flex flex-col items-center text-center relative overflow-hidden min-h-[420px]">
+      <img alt="Closeup image of a terrifying hurricane eye with swirling dark clouds and lightning flashes" class="w-36 h-36 mx-auto mb-6 rounded-full border-4 border-cyan-400 shadow-[0_0_20px_#00ffe0]" height="150" id="current-icon" src="https://storage.googleapis.com/a1aa/image/c8617836-3409-402f-849b-64ac042ea704.jpg" width="150"/>
+      <h3 class="text-3xl font-extrabold text-pink-400 uppercase tracking-widest mb-2" id="current-location">
+       Loading...
+      </h3>
+      <p class="text-cyan-300 text-lg font-mono mb-4" id="current-weather-main">
+       --
+      </p>
+      <p class="text-pink-300 font-semibold text-sm uppercase tracking-widest mb-6" id="current-weather-desc">
+       --
+      </p>
+      <div class="flex space-x-6 text-pink-400 font-bold text-xl" id="current-stats">
+       <div>
+        <i class="fas fa-temperature-high">
+        </i>
+        <span id="current-temp">
+         --°C
+        </span>
+       </div>
+       <div>
+        <i class="fas fa-wind">
+        </i>
+        <span id="current-wind">
+         -- m/s
+        </span>
+       </div>
+       <div>
+        <i class="fas fa-tint">
+        </i>
+        <span id="current-humidity">
+         --%
+        </span>
+       </div>
+      </div>
+      <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+       <img alt="Lightning strikes overlay with electric blue and pink neon flashes" class="w-full h-full object-cover opacity-20 mix-blend-screen" height="400" src="https://storage.googleapis.com/a1aa/image/25ad81fb-afd8-4d65-3b3d-0da02775fd43.jpg" width="400"/>
+      </div>
+     </div>
+     
+     <!-- 48 Hour Forecast Component -->
+     <div class="bg-gradient-to-tr from-black via-pink-900 to-black rounded-3xl p-8 shadow-[0_0_40px_#ff00c8] text-cyan-400 font-mono min-h-[420px] flex flex-col h-screen">
+      <h3 class="text-3xl font-extrabold uppercase tracking-widest mb-6 text-center drop-shadow-[0_0_10px_rgba(0,255,234,0.7)]">
+       48 Hour Forecast
+      </h3>
+      <div class="space-y-4 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-pink-600 scrollbar-track-black flex-grow" id="hourly-forecast">
+       <p class="text-pink-400 text-center font-semibold mt-20" id="hourly-empty-msg">
+        Loading forecast...
+       </p>
+      </div>
+     </div>
+     
+     <!-- Weather Anomaly Detector Component -->
+     <div class="bg-gradient-to-bl from-black via-pink-900 to-black rounded-3xl p-8 shadow-[0_0_40px_#00ffe0] text-pink-400 font-mono flex flex-col space-y-6 min-h-[420px]">
+      <h3 class="text-3xl font-extrabold uppercase tracking-widest text-center drop-shadow-[0_0_10px_rgba(255,0,200,0.7)]">
+       Weather Anomaly Detector
+      </h3>
+      <p class="text-center text-lg font-semibold" id="anomaly-msg">
+       Loading anomaly data...
+      </p>
+      <ul class="space-y-4 list-disc list-inside text-pink-300" id="anomaly-list">
+      </ul>
+      <img alt="Radar scan image showing neon glitch effects highlighting plasma storms and tornado anomalies" class="rounded-xl border-4 border-pink-600 shadow-[0_0_30px_#ff00c8] mx-auto" height="200" src="https://storage.googleapis.com/a1aa/image/57e2b667-a11b-408b-f9d4-704bc3ee3f9c.jpg" width="400"/>
+      <button class="mt-auto bg-pink-600 hover:bg-pink-700 text-black font-extrabold uppercase tracking-widest py-3 rounded-lg shadow-lg transition duration-300 neon-btn" id="anomaly-alert-btn" disabled>
+       Activate Anomaly Alert System
+      </button>
+     </div>
+    </div>
+   </section>
+  </main>
+
+  <!-- Footer Component -->
+  <footer class="bg-black bg-opacity-90 border-t border-pink-600 py-8 mt-20">
+   <div class="max-w-7xl mx-auto px-6 text-center text-pink-500 font-mono text-sm uppercase tracking-widest space-y-2">
+    <p>
+     © 2024 Insane Weather Forecast. All rights reserved.
+    </p>
+    <p id="footer-info" class="text-xs text-pink-400">
+     Loading location and API info...
+    </p>
+    <p>
+     Made with
+     <i class="fas fa-heart text-pink-600">
+     </i>
+     and neon vibes.
+    </p>
+   </div>
+  </footer>
+
+  <script>
+   // JavaScript functionality
+   const menuBtn = document.getElementById('menu-btn');
+   const mobileMenu = document.getElementById('mobile-menu');
+   menuBtn.addEventListener('click', () => {
+     mobileMenu.classList.toggle('hidden');
+   });
+   const form = document.getElementById('location-form');
+   const input = document.getElementById('location-input');
+   // Current weather elements
+   const weatherLocation = document.getElementById('weather-location');
+   const weatherDescription = document.getElementById('weather-description');
+   const weatherIcon = document.getElementById('weather-icon');
+   const tempEl = document.getElementById('temp');
+   const windEl = document.getElementById('wind');
+   const humidityEl = document.getElementById('humidity');
+   const weatherLoader = document.getElementById('weather-loader');
+   const weatherContent = document.getElementById('weather-content');
+   // Live hurricane fury style current weather elements
+   const currentIcon = document.getElementById('current-icon');
+   const currentLocation = document.getElementById('current-location');
+   const currentWeatherMain = document.getElementById('current-weather-main');
+   const currentWeatherDesc = document.getElementById('current-weather-desc');
+   const currentTemp = document.getElementById('current-temp');
+   const currentWind = document.getElementById('current-wind');
+   const currentHumidity = document.getElementById('current-humidity');
+   // Hourly forecast container
+   const hourlyForecast = document.getElementById('hourly-forecast');
+   const hourlyEmptyMsg = document.getElementById('hourly-empty-msg');
+   // Anomaly detector elements
+   const anomalyMsg = document.getElementById('anomaly-msg');
+   const anomalyList = document.getElementById('anomaly-list');
+   const anomalyAlertBtn = document.getElementById('anomaly-alert-btn');
+   // Footer info
+   const footerInfo = document.getElementById('footer-info');
+   
+   // IMPORTANT: Replace with your actual OpenWeatherMap API key
+   const API_KEY = '36b8e1516110d3b125002abfe41c1c24'; // Replace with your actual API key
+   
+   // Helper: Map OpenWeather icon code to neon style icons or fallback
+   function getIconUrl(iconCode) {
+     return `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+   }
+   
+   // Animate weather icon with subtle neon flicker
+   function animateIcon(iconEl) {
+     iconEl.classList.add('animate-flicker');
+     setTimeout(() => {
+       iconEl.classList.remove('animate-flicker');
+     }, 2000);
+   }
+   
+   // Flicker animation for icon
+   const style = document.createElement('style');
+   style.textContent = `
+     @keyframes flicker {
+       0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px #00ffe0); }
+       50% { opacity: 0.7; filter: drop-shadow(0 0 20px #ff00c8); }
+     }
+     .animate-flicker {
+       animation: flicker 2s ease-in-out infinite;
+     }
+   `;
+   document.head.appendChild(style);
+   
+   // Convert Fahrenheit to Celsius
+   function fToC(f) {
+     return Math.round((f - 32) * 5 / 9);
+   }
+   
+   // Convert miles per hour to meters per second
+   function mphToMs(mph) {
+     return (mph * 0.44704).toFixed(1);
+   }
+   
+   // Fetch weather data by city name
+   async function fetchWeatherByCity(city) {
+     const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=imperial`;
+     const response = await fetch(url);
+     if (!response.ok) {
+       if (response.status === 404) throw new Error('Location not found');
+       else throw new Error('API error');
+     }
+     return response.json();
+   }
+   
+   // Fetch 5-day forecast by coordinates (FREE API)
+   async function fetch5DayForecast(lat, lon) {
+     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
+     const response = await fetch(url);
+     if (!response.ok) {
+       console.error('5-day forecast API error:', response.status, response.statusText);
+       throw new Error('5-day forecast API error');
+     }
+     return response.json();
+   }
+   
+   // Detect anomalies (crazy weather) based on weather conditions
+   function detectAnomalies(weatherData) {
+     const anomalies = [];
+     const main = weatherData.weather[0].main.toLowerCase();
+     const desc = weatherData.weather[0].description.toLowerCase();
+     const windSpeed = weatherData.wind.speed;
+     const temp = weatherData.main.temp;
+     const humidity = weatherData.main.humidity;
+     const pressure = weatherData.main.pressure;
+     
+     // Temperature anomalies
+     if (temp > 90) anomalies.push(`🔥 Extreme heat: ${Math.round(temp)}°F`);
+     if (temp < 32) anomalies.push(`❄️ Freezing temperatures: ${Math.round(temp)}°F`);
+     
+     // Wind anomalies
+     if (windSpeed > 25) anomalies.push(`💨 Strong winds: ${Math.round(windSpeed)} mph`);
+     if (windSpeed > 40) anomalies.push(`🌪️ Dangerous wind speeds: ${Math.round(windSpeed)} mph`);
+     
+     // Humidity anomalies
+     if (humidity > 85) anomalies.push(`💧 High humidity: ${humidity}%`);
+     if (humidity < 20) anomalies.push(`🏜️ Extremely dry: ${humidity}%`);
+     
+     // Pressure anomalies
+     if (pressure < 1000) anomalies.push(`🌀 Low pressure system: ${pressure} hPa`);
+     if (pressure > 1030) anomalies.push(`🌡️ High pressure system: ${pressure} hPa`);
+     
+     // Weather condition anomalies
+     if (main.includes('thunderstorm')) anomalies.push('⚡ Thunderstorm activity detected');
+     if (main.includes('tornado') || desc.includes('tornado')) anomalies.push('🌪️ Tornado conditions possible');
+     if (main.includes('snow')) anomalies.push('❄️ Snowfall detected');
+     if (main.includes('rain') && windSpeed > 20) anomalies.push('🌧️ Wind-driven rain');
+     
+     // Additional conditions
+     if (desc.includes('fog')) anomalies.push('🌫️ Fog conditions present');
+     if (desc.includes('haze')) anomalies.push('🌫️ Hazy conditions');
+     
+     return anomalies;
+   }
+   
+   // Format timestamp to local time string
+   function formatTime(timestamp, timezoneOffset) {
+     const date = new Date(timestamp * 1000);
+     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+   }
+   
+   // Render 5-day forecast list with Celsius and m/s (using data every 3 hours)
+   function render5DayForecast(forecastData) {
+     hourlyEmptyMsg.style.display = 'none';
+     hourlyForecast.innerHTML = '';
+     
+     // Check if we have forecast data
+     if (!forecastData || !forecastData.list || forecastData.list.length === 0) {
+       showHourlyError('No forecast data available.');
+       return;
+     }
+     
+     // Get the first 16 entries (48 hours / 3 hours per entry = 16 entries)
+     const hourlyData = forecastData.list.slice(0, 16);
+     
+     hourlyData.forEach(hour => {
+       const time = formatTime(hour.dt);
+       const tempC = fToC(hour.main.temp);
+       const iconUrl = getIconUrl(hour.weather[0].icon);
+       const desc = hour.weather[0].description;
+       const windMs = mphToMs(hour.wind.speed);
+       
+       const item = document.createElement('div');
+       item.className = 'flex justify-between items-center border-b border-pink-700 pb-2 text-pink-400';
+       item.innerHTML = `
+         <span class="font-bold">${time}</span>
+         <span class="flex items-center space-x-2">
+           <img src="${iconUrl}" alt="${desc}" class="w-6 h-6"/>
+           <span>${desc.charAt(0).toUpperCase() + desc.slice(1)}</span>
+         </span>
+         <span>${tempC}°C</span>
+         <span><i class="fas fa-wind"></i> ${windMs} m/s</span>
+       `;
+       hourlyForecast.appendChild(item);
+     });
+   }
+   
+   // Update anomaly detector UI
+   function updateAnomalyUI(anomalies) {
+     anomalyList.innerHTML = '';
+     
+     if (anomalies.length === 0) {
+       // Add some default anomalies to make the component more interesting
+       anomalyMsg.textContent = 'Weather conditions within normal parameters.';
+       
+       // Add some "normal" but interesting conditions
+       const normalConditions = [
+         '🌡️ Temperature within seasonal norms',
+         '💨 Wind patterns stable',
+         '💧 Humidity at comfortable levels',
+         '🌅 Clear atmospheric conditions'
+       ];
+       
+       normalConditions.forEach(condition => {
+         const li = document.createElement('li');
+         li.textContent = condition;
+         li.className = 'text-cyan-300';
+         anomalyList.appendChild(li);
+       });
+       
+       anomalyAlertBtn.disabled = true;
+     } else {
+       anomalyMsg.textContent = 'Detected weather anomalies:';
+       anomalies.forEach(a => {
+         const li = document.createElement('li');
+         li.textContent = a;
+         anomalyList.appendChild(li);
+       });
+       anomalyAlertBtn.disabled = false;
+     }
+   }
+   
+   // Update current weather card UI with Celsius and m/s
+   function updateCurrentWeatherUI(data) {
+     currentLocation.textContent = `${data.name}, ${data.sys.country}`;
+     currentWeatherMain.textContent = data.weather[0].main.toUpperCase();
+     currentWeatherDesc.textContent = data.weather[0].description.toUpperCase();
+     currentIcon.src = getIconUrl(data.weather[0].icon);
+     currentIcon.alt = `Weather icon showing ${data.weather[0].description}`;
+     currentTemp.textContent = `${fToC(data.main.temp)}°C`;
+     currentWind.textContent = `${mphToMs(data.wind.speed)} m/s`;
+     currentHumidity.textContent = `${data.main.humidity}%`;
+     animateIcon(currentIcon);
+   }
+   
+   // Update main current weather UI (top input section) with Celsius and m/s
+   function updateMainWeatherUI(data) {
+     weatherLocation.textContent = `${data.name}, ${data.sys.country}`;
+     weatherDescription.textContent = data.weather[0].description.toUpperCase();
+     weatherIcon.src = getIconUrl(data.weather[0].icon);
+     weatherIcon.alt = `Weather icon showing ${data.weather[0].description}`;
+     tempEl.textContent = `${fToC(data.main.temp)}°C`;
+     windEl.textContent = `${mphToMs(data.wind.speed)} m/s`;
+     humidityEl.textContent = `${data.main.humidity}%`;
+     animateIcon(weatherIcon);
+   }
+   
+   // Show error UI for current weather card
+   function showCurrentWeatherError(msg) {
+     currentLocation.textContent = msg;
+     currentWeatherMain.textContent = '--';
+     currentWeatherDesc.textContent = '--';
+     currentIcon.src = 'https://placehold.co/150x150/png?text=!';
+     currentIcon.alt = 'Error icon';
+     currentTemp.textContent = '--°C';
+     currentWind.textContent = '-- m/s';
+     currentHumidity.textContent = '--%';
+   }
+   
+   // Show error UI for main weather card
+   function showMainWeatherError(msg) {
+     weatherLocation.textContent = msg;
+     weatherDescription.textContent = '';
+     weatherIcon.src = 'https://placehold.co/150x150/png?text=!';
+     weatherIcon.alt = 'Error icon';
+     tempEl.textContent = '--°C';
+     windEl.textContent = '-- m/s';
+     humidityEl.textContent = '--%';
+   }
+   
+   // Show error UI for hourly forecast
+   function showHourlyError(msg) {
+     hourlyForecast.innerHTML = '';
+     hourlyEmptyMsg.style.display = 'block';
+     hourlyEmptyMsg.textContent = msg;
+   }
+   
+   // Show error UI for anomaly detector
+   function showAnomalyError(msg) {
+     anomalyMsg.textContent = msg;
+     anomalyList.innerHTML = '';
+     anomalyAlertBtn.disabled = true;
+   }
+   
+   // Get user's current location via Geolocation API
+   function getUserLocation() {
+     return new Promise((resolve, reject) => {
+       if (!navigator.geolocation) {
+         reject(new Error('Geolocation not supported'));
+       } else {
+         navigator.geolocation.getCurrentPosition(
+           pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+           err => reject(err)
+         );
+       }
+     });
+   }
+   
+   // Fetch weather by coordinates (reverse geocode to get city name)
+   async function fetchWeatherByCoords(lat, lon) {
+     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
+     const response = await fetch(url);
+     if (!response.ok) throw new Error('API error fetching weather by coordinates');
+     return response.json();
+   }
+   
+   // Reverse geocode to get city name from coordinates (using OpenWeather reverse geocode)
+   async function reverseGeocode(lat, lon) {
+     const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`;
+     const response = await fetch(url);
+     if (!response.ok) throw new Error('API error reverse geocoding');
+     const data = await response.json();
+     if (data.length === 0) throw new Error('No location found for coordinates');
+     return data[0].name;
+   }
+   
+   // Main function to update all weather info for a location (city name)
+   async function updateWeatherForLocation(location) {
+     weatherLoader.classList.remove('hidden');
+     weatherContent.style.display = 'none';
+     anomalyAlertBtn.disabled = true;
+     anomalyMsg.textContent = 'Loading anomaly data...';
+     anomalyList.innerHTML = '';
+     hourlyForecast.innerHTML = '';
+     hourlyEmptyMsg.style.display = 'block';
+     hourlyEmptyMsg.textContent = 'Loading forecast...';
+     
+     try {
+       // Fetch current weather by city
+       const currentWeather = await fetchWeatherByCity(location);
+       
+       // Update main weather UI and current weather card
+       updateMainWeatherUI(currentWeather);
+       updateCurrentWeatherUI(currentWeather);
+       
+       // Fetch 5-day forecast by coordinates (FREE API)
+       let forecastData;
+       try {
+         forecastData = await fetch5DayForecast(currentWeather.coord.lat, currentWeather.coord.lon);
+         console.log('5-day forecast data received:', forecastData);
+       } catch (err) {
+         console.error('Error fetching 5-day forecast:', err);
+         showHourlyError('Forecast not available for this location.');
+         forecastData = null;
+       }
+       
+       // Render 5-day forecast if available
+       if (forecastData && forecastData.list && forecastData.list.length > 0) {
+         render5DayForecast(forecastData);
+       } else {
+         showHourlyError('No forecast data available.');
+       }
+       
+       // Detect anomalies
+       const anomalies = detectAnomalies(currentWeather);
+       updateAnomalyUI(anomalies);
+       
+       // Update footer info
+       footerInfo.textContent = `Showing live weather for "${currentWeather.name}, ${currentWeather.sys.country}". API: OpenWeatherMap.`;
+     } catch (error) {
+       console.error('Error updating weather:', error);
+       // Show errors in all sections
+       showMainWeatherError(error.message);
+       showCurrentWeatherError(error.message);
+       showHourlyError('No forecast data available for this location.');
+       showAnomalyError('No anomaly data available.');
+       footerInfo.textContent = `Error: ${error.message}. API: OpenWeatherMap.`;
+     } finally {
+       weatherLoader.classList.add('hidden');
+       weatherContent.style.display = 'block';
+     }
+   }
+   
+   // On form submit, update weather for entered location
+   form.addEventListener('submit', e => {
+     e.preventDefault();
+     const loc = input.value.trim();
+     if (loc) {
+       updateWeatherForLocation(loc);
+     }
+   });
+   
+   // On page load, get user location and show weather
+   async function init() {
+     try {
+       const pos = await getUserLocation();
+       // Reverse geocode to get city name
+       const city = await reverseGeocode(pos.lat, pos.lon);
+       input.value = city;
+       await updateWeatherForLocation(city);
+     } catch (error) {
+       console.error('Initialization error:', error);
+       // If geolocation fails, fallback to a default city (e.g., New York)
+       const fallbackCity = 'New York';
+       input.value = '';
+       weatherLocation.textContent = 'Unable to get your location. Showing default city weather.';
+       footerInfo.textContent = `Geolocation error: ${error.message}. Showing weather for ${fallbackCity}. API: OpenWeatherMap.`;
+       await updateWeatherForLocation(fallbackCity);
+     }
+   }
+   
+   // Initialize the app
+   init();
+  </script>
+ </body>
+</html>

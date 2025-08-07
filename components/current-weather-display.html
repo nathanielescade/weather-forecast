@@ -1,0 +1,28 @@
+<!-- Current Weather Display Component -->
+<div class="mt-12 max-w-5xl mx-auto bg-gradient-to-br from-pink-900 via-black to-pink-900 rounded-3xl p-8 shadow-[0_0_40px_#ff00c8] text-center relative overflow-hidden min-h-[360px] flex flex-col justify-center">
+  <div aria-label="Loading weather data" aria-live="polite" class="loader hidden" id="weather-loader" role="status">
+  </div>
+  <div class="space-y-6 text-cyan-300 font-mono" id="weather-content">
+    <h3 class="text-3xl font-extrabold text-pink-400 uppercase tracking-widest mb-2" id="weather-location">
+      Loading your current location weather...
+    </h3>
+    <img alt="Weather icon" class="mx-auto w-36 h-36 rounded-full border-4 border-cyan-400 shadow-[0_0_20px_#00ffe0]" height="150" id="weather-icon" src="https://storage.googleapis.com/a1aa/image/c8617836-3409-402f-849b-64ac042ea704.jpg" width="150"/>
+    <p class="text-lg font-semibold" id="weather-description">
+      Please wait...
+    </p>
+    <div class="flex justify-center space-x-12 text-pink-400 font-bold text-xl" id="weather-stats">
+      <div>
+        <i class="fas fa-temperature-high"></i>
+        <span id="temp">--°C</span>
+      </div>
+      <div>
+        <i class="fas fa-wind"></i>
+        <span id="wind">-- m/s</span>
+      </div>
+      <div>
+        <i class="fas fa-tint"></i>
+        <span id="humidity">--%</span>
+      </div>
+    </div>
+  </div>
+</div>
